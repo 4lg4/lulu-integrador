@@ -5,25 +5,28 @@
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### development frontend and backend
 ```
-npm run serve
+npm run dev
 ```
 
-### Compiles and minifies for production
+### Just build
 ```
 npm run build
 ```
 
-### Run your tests
+### Build app and serve the final build
 ```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
+npm run build:serve
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### more options
+### Backend Development only 
+```
+npm run dev:backend
+```
+
+### Backend Development only 
+```
+npm run dev:frontend
+```
