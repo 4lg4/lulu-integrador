@@ -8,17 +8,34 @@
     </template>
 
     <div class="Login__field">
-      <pr-input v-model="email" label="E-mail"></pr-input>
-      <pr-input v-model="password" label="Senha"></pr-input>
+      <pr-input v-model="form.email" label="E-mail"></pr-input>
+      <pr-input v-model="form.password" label="Senha"></pr-input>
 
       <br>
 
-      <pr-button @click="submit">Entrar</pr-button>
+      <pr-button @click="submit" :disabled="valid">Entrar</pr-button>
     </div>
 
     <br><br>
 
-    <a href="#/criar-nova-conta">Quero me cadastrar</a>
+    <a href="#/usuarios/cadastrar" class="green--text">Quero me cadastrar</a>
+
+
+    <v-snackbar
+      v-model="error"
+      color="error"
+      multi-line
+      :timeout="5000"
+    >
+      {{ errorMessage }}
+      <v-btn
+        dark
+        flat
+        @click="error = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
   </pr-page>
 </template>
 
@@ -37,29 +54,41 @@
 import PrPage from '@/components/pr-page.vue';
 import PrInput from '@/components/pr-input.vue';
 import PrButton from '@/components/pr-button.vue';
-
+import {mapActions} from 'vuex';
 
 export default {
   name: 'Login',
   components: {PrPage, PrInput, PrButton},
   data() {
     return {
-      email: null,
-      password: null,
+      form: {
+        email: null,
+        password: null,
+      },
+      errorMessage: 'Credenciais Inválidas',
+      error: false,
       isPwd: true,
     };
   },
   computed: {
     valid() {
-      return (this.email && this.password);
+      return !(this.form.email && this.form.password);
     },
   },
   methods: {
-    submit() {
-      console.log('submit', this.$data);
+    async submit() {
+      this.error = false;
+      const logged = await this.login(this.form);
+
+      if (!logged) {
+        this.error = true;
+        return true;
+      }
+
+      this.$router.push({name: 'MyMaterials'});
     },
-    emailRules() {},
-    passwordRules() {},
+
+    ...mapActions(['login']),
   },
 };
 </script>

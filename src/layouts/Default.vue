@@ -31,7 +31,32 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>
-              <a href="#/pesquisar">Pesquisar</a>
+              <span v-if="user.id"><u>{{user.firstName}}</u></span>
+              <a href="#/entrar" class="green--text" v-if="!user.id">Entrar</a>
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile v-if="!user.id">
+          <v-list-tile-content>
+            <v-list-tile-title>
+              <a href="#/usuarios/cadastrar" class="green--text">Quero me cadastrar</a>
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile v-if="user.id">
+          <v-list-tile-content>
+            <v-list-tile-title>
+              <a href="#/reciclagem/minha" class="green--text">Minha reciclagem</a>
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile v-if="user.id">
+          <v-list-tile-content>
+            <v-list-tile-title>
+              <a href="#/reciclagem/cadastrar" class="green--text">Cadastrar reciclagem</a>
             </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -39,26 +64,16 @@
 
         <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>
-              <a href="#/artesanatos">Artesanatos</a>
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-
-
-
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              <a href="#/materiais">Materiais</a>
-            </v-list-tile-title>
+<!--            <v-list-tile-title>-->
+              <hr>
+<!--            </v-list-tile-title>-->
           </v-list-tile-content>
         </v-list-tile>
 
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>
-              <a href="#/reciclagem/cadastrar">Cadastrar reciclagem</a>
+              <a href="#/pesquisar" class="green--text">Pesquisar</a>
             </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -66,7 +81,7 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>
-              <a href="#/entrar">Entrar</a>
+              <a href="#/artesanatos" class="green--text">Artesanatos</a>
             </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -74,7 +89,23 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>
-              <a href="#/usuarios/cadastrar">Cadastrar usuários</a>
+              <a href="#/materiais" class="green--text">Materiais</a>
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <!--            <v-list-tile-title>-->
+            <hr>
+            <!--            </v-list-tile-title>-->
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>
+              <a href="#/sobre" class="green--text">Sobre</a>
             </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -82,15 +113,7 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>
-              <a href="#/sobre">Sobre</a>
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              <a href="#/">Home</a>
+              <a href="#/" class="green--text">Home</a>
             </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -114,6 +137,8 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex';
+
 export default {
   name: 'LayoutDefault',
 
@@ -125,10 +150,13 @@ export default {
     return {
       drawer: null,
       drawerRight: null,
-      left: false
-    }
-  }
-}
+      left: false,
+    };
+  },
+  computed: {
+    ...mapState(['user']),
+  },
+};
 </script>
 
 <style scoped>

@@ -1,50 +1,12 @@
 const Waterline = require('waterline');
-const API_USERS = '/api/users';
-const API_USER = `${API_USERS}/:id`;
+const API_MATERIALS = '/api/crafts';
+const API_MATERIAL = `${API_MATERIALS}/:id`;
+const MODEL = 'craft';
 
 module.exports = (app, orm)=> {
-  const User = Waterline.getModel('user', orm);
-  const Material = Waterline.getModel('material', orm);
-  const Craft = Waterline.getModel('craft', orm);
-
-  app.get(API_USERS, function (req, res) {
-    User
+  app.get(API_MATERIALS, function (req, res) {
+    Waterline.getModel(MODEL, orm)
       .find()
-      .catch({name: 'UsageError'}, function (err) {
-        console.log('Refusing to perform impossible/confusing query.  Details:', err);
-        return res.sendStatus(400);
-      })
-      .catch(function (err) {
-        console.error('Unexpected error occurred:', err.stack);
-        return res.sendStatus(500);
-      })
-      .then(function (record) {
-        return res.json(record);
-      });
-  });
-
-
-  app.get(`${API_USER}/materials`, function (req, res) {
-    Material
-      .find()
-      .where({user: req.params.id})
-      .catch({name: 'UsageError'}, function (err) {
-        console.log('Refusing to perform impossible/confusing query.  Details:', err);
-        return res.sendStatus(400);
-      })
-      .catch(function (err) {
-        console.error('Unexpected error occurred:', err.stack);
-        return res.sendStatus(500);
-      })
-      .then(function (record) {
-        return res.json(record);
-      });
-  });
-
-  app.get(`${API_USER}/crafts`, function (req, res) {
-    Craft
-      .find()
-      .where({user: req.params.id})
       .catch({name: 'UsageError'}, function (err) {
         console.log('Refusing to perform impossible/confusing query.  Details:', err);
         return res.sendStatus(400);
@@ -60,8 +22,8 @@ module.exports = (app, orm)=> {
 
 
   // Find one user
-  app.get(API_USER, function (req, res) {
-    User
+  app.get(API_MATERIAL, function (req, res) {
+    Waterline.getModel(MODEL, orm)
       .findOne({id: req.params.id})
       .catch({name: 'UsageError'}, function (err) {
         console.log('Refusing to perform impossible/confusing query.  Details:', err);
@@ -79,16 +41,13 @@ module.exports = (app, orm)=> {
 
   // Create a user
   // (This one uses promises, just for fun.)
-  app.post(API_USERS, async (req, res)=> {
-    const user = await User.findOne({
-      email: req.body.email,
-    });
+  app.post(API_MATERIALS, function (req, res) {
 
-    if (user) {
-      return res.status(401).json('Usuário existente');
-    }
+    // TODO: add validations
+    // ['artesanato', 'craft'].includes(req.body.type);
+    // ['plástico', 'papel', 'metal', 'vidro'].includes(req.body.craft);
 
-    User
+    Waterline.getModel(MODEL, orm)
       .create(req.body)
       .meta({fetch: true})
       .catch({name: 'UsageError'}, function (err) {
@@ -109,8 +68,8 @@ module.exports = (app, orm)=> {
   });
 
   // Destroy a user (if it exists)
-  app.delete(API_USER, function (req, res) {
-    User
+  app.delete(API_MATERIAL, function (req, res) {
+    Waterline.getModel(MODEL, orm)
       .destroy({id: req.params.id}, function (err) {
         if (err && err.name === 'UsageError') {
           return res.sendStatus(400);
@@ -125,7 +84,7 @@ module.exports = (app, orm)=> {
 
 
   // Update a user
-  app.put(API_USER, function (req, res) {
+  app.put(API_MATERIAL, function (req, res) {
 
     // Don't pass ID to update
     // > (We don't want to try to change the primary key this way, at least not
@@ -136,7 +95,7 @@ module.exports = (app, orm)=> {
 
     // In this example, we'll send back a JSON representation of the newly-updated
     // user record, just for kicks.
-    User
+    Waterline.getModel(MODEL, orm)
       .update({id: req.params.id})
       .set(valuesToSet)
       .meta({fetch: true})

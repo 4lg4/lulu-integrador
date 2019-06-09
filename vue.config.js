@@ -1,8 +1,10 @@
 module.exports = {
-  pluginOptions: {
-    quasar: {}
+  devServer: {
+    // host: '0.0.0.0',
+    // port: '8080',
+    hot: true,
+    inline: true,
+    disableHostCheck: true,
+    // public: '0.0.0.0:0',
   },
-  transpileDependencies: [
-    /[\\\/]node_modules[\\\/]quasar[\\\/]/
-  ]
-}
+};

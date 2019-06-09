@@ -1,6 +1,6 @@
 module.exports = {
   attributes: {
-    userId: {
+    user: {
       model: 'user',
     },
   },

@@ -3,7 +3,7 @@
     class="Material"
     title="Cadastro"
   >
-    <v-radio-group v-model="type" row>
+    <v-radio-group v-model="form.type" row>
       <v-radio
         label="Artesanato"
         value="artesanato"
@@ -16,26 +16,27 @@
       ></v-radio>
     </v-radio-group>
 
-    <pr-input v-model="price" label="Valor"></pr-input>
-    <pr-input v-model="title" label="Título"></pr-input>
-    <pr-input v-model="description" label="Descrição" textarea></pr-input>
+    <pr-input v-model="form.price" label="Valor"></pr-input>
+    <pr-input v-model="form.title" label="Título"></pr-input>
+    <pr-input v-model="form.image" label="Url da imagem" v-if="form.type === 'artesanato'"></pr-input>
+    <pr-input v-model="form.description" label="Descrição" textarea></pr-input>
 
     <v-select
       :items="districts"
-      v-model="district"
+      v-model="form.district"
       label="Bairro"
     ></v-select>
 
-    <pr-input v-model="contact" label="Contato"></pr-input>
+    <pr-input v-model="form.contact" label="Contato"></pr-input>
 
     <v-select
-      v-if="type === 'material'"
+      v-if="form.type === 'material'"
       :items="materials"
-      v-model="material"
+      v-model="form.material"
       label="Material"
     ></v-select>
 
-    <pr-button @click="submit">Cadastrar</pr-button>
+    <pr-button @click="submit" :disabled="valid">Cadastrar</pr-button>
   </pr-page>
 </template>
 
@@ -44,36 +45,59 @@ import districts from '@/collections/poa-bairros.json';
 import PrPage from '@/components/pr-page.vue';
 import PrInput from '@/components/pr-input.vue';
 import PrButton from '@/components/pr-button.vue';
+import {mapActions, mapState} from 'vuex';
 
 export default {
   name: 'Material',
   components: {PrPage, PrInput, PrButton},
   data() {
     return {
-      type: 'artesanato',
-      price: 0,
-      description: null,
-      district: null,
-
-      contact: null,
-      material: null,
-      title: null,
+      form: {
+        type: 'artesanato',
+        price: 0,
+        description: null,
+        district: null,
+        contact: null,
+        material: null,
+        title: null,
+        image: null,
+      },
 
       materials: ['plástico', 'papel', 'metal', 'vidro'],
       districts,
     };
   },
   computed: {
+    ...mapState(['user']),
     valid() {
-      return (this.search);
+      if (this.form.type === 'material') {
+        return !(this.form.description && this.form.district && this.form.contact && this.form.material && this.form.title);
+      }
+
+      return !(this.form.description && this.form.district && this.form.contact && this.form.image && this.form.title);
     },
   },
   methods: {
-    submit() {
-      console.log('submit', this.$data);
+    async submit() {
+      this.error = false;
+
+      const form = Object.assign({}, this.form, {user: this.user.id});
+
+      try {
+        if (this.form.type === 'material') {
+          await this.materialCreate(form);
+        } else {
+          await this.craftCreate(form);
+        }
+
+        this.$router.push({name: 'MyMaterials'});
+      } catch (e) {
+        this.error = true;
+        return true;
+      }
     },
-    emailRules() {},
-    passwordRules() {},
+
+    ...mapActions(['materialCreate', 'craftCreate']),
   },
 };
 </script>

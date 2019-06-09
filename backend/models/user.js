@@ -1,17 +1,21 @@
 module.exports = {
   attributes: {
-    emailAddress: {
+    email: {
       type: 'string',
-      required: true
+      required: true,
     },
     firstName: {
-      type: 'string'
+      type: 'string',
     },
     lastName: {
-      type: 'string'
+      type: 'string',
     },
     password: {
-      type: 'string'
+      type: 'string',
     },
+    materials: {
+      collection: 'material',
+      via: 'user',
+    }
   }
 };

@@ -1,3 +1,4 @@
+import store from './store';
 import Vue from 'vue';
 import Router from 'vue-router';
 import DefaultLayout from './layouts/Default.vue';
@@ -7,12 +8,13 @@ import Login from './views/Login.vue';
 import Search from './views/Search.vue';
 import Material from './views/Material.vue';
 import Materials from './views/Materials.vue';
+import MyMaterials from './views/MyMaterials.vue';
 import NewUser from './views/NewUser.vue';
 import Crafts from './views/Crafts.vue';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -44,6 +46,11 @@ export default new Router({
           component: Material
         },
         {
+          path: '/reciclagem/minha',
+          name: 'MyMaterials',
+          component: MyMaterials
+        },
+        {
           path: '/materiais',
           name: 'Materials',
           component: Materials
@@ -61,4 +68,16 @@ export default new Router({
       ]
     }
   ]
-})
+});
+
+const loggedModules = ['Material', 'MyMaterials'];
+
+router.beforeEach((to, from, next) => {
+  if (!store.state.user.id && loggedModules.includes(to.name)) {
+    return next({name: 'Login'});
+  }
+
+  next();
+});
+
+export default router;

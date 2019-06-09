@@ -8,38 +8,51 @@
     </template>
 
     <pr-input-button
-      v-model="search"
       label="O que você está procurando"
       label-button="Pesquisar"
       @click="submit"
     >
     </pr-input-button>
+
+
+    <v-layout row wrap justify-center>
+      <pr-card-material
+        v-for="(material, index) in search.materials"
+        :key="index"
+        :value="material"
+        :owner="(material && material.user === user.id)"
+      ></pr-card-material>
+    </v-layout>
+
+    <v-layout row wrap justify-center>
+      <pr-card-craft
+        v-for="(craft, index) in search.crafts"
+        :key="index"
+        :value="craft"
+        :owner="(craft && craft.user === user.id)"
+      >
+      </pr-card-craft>
+    </v-layout>
   </pr-page>
 </template>
 
 <script>
 import PrPage from '@/components/pr-page.vue';
 import PrInputButton from '@/components/pr-input-button.vue';
+import PrCardMaterial from '@/components/pr-card-material.vue';
+import PrCardCraft from '@/components/pr-card-craft.vue';
+import {mapState} from 'vuex';
 
 export default {
-  name: 'Login',
-  components: {PrPage, PrInputButton},
-  data() {
-    return {
-      search: null,
-    };
-  },
+  name: 'Search',
+  components: {PrPage, PrInputButton, PrCardMaterial, PrCardCraft},
   computed: {
-    valid() {
-      return (this.search);
-    },
+    ...mapState(['search', 'user']),
   },
   methods: {
-    submit() {
-      console.log('submit', this.$data);
+    submit(query) {
+      this.$store.dispatch('search', query);
     },
-    emailRules() {},
-    passwordRules() {},
   },
 };
 </script>

@@ -3,6 +3,8 @@ const API = '/api/session';
 const ORM_MODEL = 'session';
 
 module.exports = (app, orm)=> {
+  const User = Waterline.getModel('user', orm);
+
   // app.get(`${API}/:session`, function (req, res) {
   //   Waterline.getModel(ORM_MODEL, orm)
   //     .find()
@@ -37,7 +39,17 @@ module.exports = (app, orm)=> {
   });
 
 
-  app.post(API, function (req, res) {
+  app.post(API, async (req, res)=> {
+
+    const user = await User.findOne().where(req.body);
+
+    if (user) {
+      return res.status(200).json(user);
+    }
+
+    return res.status(401).json('Credenciais inválidas');
+
+
     Waterline.getModel(ORM_MODEL, orm)
       .create(req.body)
       .meta({fetch: true})

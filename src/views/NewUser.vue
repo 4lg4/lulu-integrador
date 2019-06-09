@@ -4,53 +4,71 @@
     title="Criar novo usuário"
   >
 
-    <pr-input v-model="email" label="Usuário"></pr-input>
-    <pr-input v-model="password" label="Senha"></pr-input>
-    <pr-input v-model="confirmPassword" label="Confirmar Senha"></pr-input>
+    <pr-input v-model="form.email" label="Email"></pr-input>
+    <pr-input v-model="form.firstName" label="Nome"></pr-input>
+    <pr-input v-model="form.password" label="Senha"></pr-input>
+    <pr-input v-model="form.confirmPassword" label="Confirmar Senha"></pr-input>
 
-    <pr-button @click="submit">Cadastrar</pr-button>
+    <pr-button @click="submit" :disabled="valid">Cadastrar</pr-button>
+
+    <v-snackbar
+      v-model="error"
+      color="error"
+      multi-line
+      :timeout="5000"
+    >
+      {{ errorMessage }}
+      <v-btn
+        dark
+        flat
+        @click="error = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
   </pr-page>
 </template>
-
-<style scoped>
-  .Search {
-    text-align: center;
-    width: 100%;
-  }
-
-  .Search__field {
-    display: flex;
-    width: 80%;
-    margin: 0 auto;
-  }
-</style>
 
 <script>
   import PrPage from '@/components/pr-page.vue';
   import PrInput from '@/components/pr-input.vue';
   import PrButton from '@/components/pr-button.vue';
+  import {mapActions} from 'vuex';
 
 export default {
   name: 'NewUser',
   components: {PrPage, PrInput, PrButton},
   data() {
     return {
-      email: null,
-      confirmPassword: null,
-      password: null,
+      form: {
+        email: null,
+        confirmPassword: null,
+        password: null,
+      },
+
+      errorMessage: 'Usuário existente',
+      error: false,
     };
   },
   computed: {
     valid() {
-      return (this.search);
+      return !(this.form.email && this.form.firstName && this.form.password && this.form.confirmPassword && (this.form.password === this.form.confirmPassword));
     },
   },
   methods: {
-    submit() {
-      console.log('submit', this.$data);
+    async submit() {
+      this.error = false;
+
+      try {
+        await this.userCreate(this.form);
+        this.$router.push({name: 'MyMaterials'});
+      } catch (e) {
+        this.error = true;
+        return true;
+      }
     },
-    emailRules() {},
-    passwordRules() {},
+
+    ...mapActions(['userCreate']),
   },
 };
 </script>

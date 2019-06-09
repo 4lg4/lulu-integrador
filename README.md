@@ -30,3 +30,11 @@ npm run dev:backend
 ```
 npm run dev:frontend
 ```
+
+## configuring DB
+> add your DB config on this file
+```
+// mongo config
+// adapter: 'sails-mongo',
+// url: 'mongodb://user:password@host:port/database',
+```

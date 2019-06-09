@@ -2,7 +2,7 @@
   <div class="pr-input-button">
     <div class="pr-input-button__field">
       <pr-input class="pr-input-button__field__item-input" v-model="value" :label="label"></pr-input>
-      <pr-button class="pr-input-button__field__item-button" @click="click">{{ labelButton }}</pr-button>
+      <pr-button class="pr-input-button__field__item-button" @click="click" :disabled="disabled">{{ labelButton }}</pr-button>
     </div>
   </div>
 </template>
@@ -28,6 +28,11 @@ export default {
     return {
       value: null,
     };
+  },
+  computed: {
+    disabled() {
+      return !(this.value);
+    }
   },
   methods: {
     click() {
