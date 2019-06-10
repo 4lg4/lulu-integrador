@@ -131,7 +131,7 @@
     <v-footer color="light-green darken-1" class="white--text Default__footer" app>
       <span>Portal da reciclagem</span>
       <v-spacer></v-spacer>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span>&copy; {{ new Date().getFullYear() }} <small>lulu enterprises</small></span>
     </v-footer>
   </v-app>
 </template>
